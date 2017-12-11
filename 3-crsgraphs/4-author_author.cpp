@@ -118,7 +118,7 @@ int main(int argc, char** argv)
   ofstream colind("author_collaborates_author_colind.txt");
 
   colind << col_ind.size() << endl << endl;
-  for (int i = 0; i < col_ind.size(); i++)
+  for (long long int i = 0; i < col_ind.size(); i++)
     colind << col_ind[i] << endl;
 
   colind.close();
@@ -128,7 +128,7 @@ int main(int argc, char** argv)
   ofstream w("author_collaborates_author_weights.txt");
 
   w << weights.size() << endl << endl;
-  for (int i = 0; i < weights.size(); i++)
+  for (long long int i = 0; i < weights.size(); i++)
     w << weights[i] << endl;
 
   w.close();

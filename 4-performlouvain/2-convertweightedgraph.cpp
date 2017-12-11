@@ -73,7 +73,7 @@ int main(int argc, char** argv)
 
   ofstream out("graph.txt");
 
-  for (int node1 = 0; node1 < rowptr.size(); node1++)
+  for (int node1 = 0; node1 < rowptr.size() - 1; node1++)
     for (long long int ind = rowptr[node1]; ind < rowptr[node1 + 1]; ind++)
     {
       int node2 = colind[ind];
