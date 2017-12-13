@@ -14,7 +14,7 @@ struct comm_size
   int community;
   long long int size;    
   
-  bool operator<(comm_size const& rhs) const 
+  bool operator<(comm_size const & rhs) const 
   {
     return size < rhs.size;
   }
