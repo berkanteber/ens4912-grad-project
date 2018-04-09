@@ -22,7 +22,7 @@ struct community
 
 int main()
 {
-  ifstream in_cites_rowptr("../00-data/07-authorcitesauthor/author_cites_author_rowptr.txt");
+  ifstream in_cites_rowptr("../00-data/07-authorcitesauthor/author_cites_author_self_excluded_rowptr.txt");
 
   string line_cites_rowptr;
   getline(in_cites_rowptr, line_cites_rowptr);
@@ -38,9 +38,9 @@ int main()
   }
 
   in_cites_rowptr.close();
-  cout << "author_cites_author_rowptr.txt has been read." << endl; 
+  cout << "author_cites_author_self_excluded_rowptr.txt has been read." << endl; 
 
-  ifstream in_cites_colind("../00-data/07-authorcitesauthor/author_cites_author_colind.txt");
+  ifstream in_cites_colind("../00-data/07-authorcitesauthor/author_cites_author_self_excluded_colind.txt");
 
   string line_cites_colind;
   getline(in_cites_colind, line_cites_colind);
@@ -56,9 +56,9 @@ int main()
   }
 
   in_cites_colind.close();
-  cout << "author_cites_author_colind.txt has been read." << endl; 
+  cout << "author_cites_author_self_excluded_colind.txt has been read." << endl; 
 
-  ifstream in_cites_weights("../00-data/07-authorcitesauthor/author_cites_author_weights.txt");
+  ifstream in_cites_weights("../00-data/07-authorcitesauthor/author_cites_author_self_excluded_weights.txt");
 
   string line_cites_weights;
   getline(in_cites_weights, line_cites_weights);
@@ -74,11 +74,11 @@ int main()
   }
 
   in_cites_weights.close();
-  cout << "author_cites_author_weights.txt has been read." << endl; 
+  cout << "author_cites_author_self_excluded_weights.txt has been read." << endl; 
 
   cout << endl;
 
-  ifstream in_node2comm("../00-data/07-authorcitesauthor/author_cites_author_node2comm.txt");
+  ifstream in_node2comm("../00-data/07-authorcitesauthor/author_cites_author_self_excluded_node2comm.txt");
 
   string line_node2comm;
 
@@ -95,7 +95,7 @@ int main()
   }
 
   in_node2comm.close();
-  cout << "author_cites_author_node2comm.txt has been read." << endl;
+  cout << "author_cites_author_self_excluded_node2comm.txt has been read." << endl;
 
   cout << endl;
 
@@ -148,14 +148,14 @@ int main()
 
   make_heap(possible.begin(), possible.end());
   
-  ofstream out_ranks("top100ranks.txt");
+  ofstream out_ranks("top100ranks_selfexcluded.txt");
   out_ranks << 100 << endl << endl;
 
   for (int i = 1; i <= 100; i++)
   { 
     string s = to_string(i);
 
-    ofstream out("top_" + s + "_comm.txt");
+    ofstream out("top_" + s + "_comm_self_excluded.txt");
 
     out << possible.front().comm << "  " << possible.front().val << "  " 
         << comm2node[possible.front().comm].size() << endl;
@@ -191,7 +191,7 @@ int main()
     possible.pop_back();
   
     out.close();
-    cout << "top_" + s + "_comm.txt has been written." << endl;
+    cout << "top_" + s + "_comm_self_excluded.txt has been written." << endl;
   }
 
   out_ranks.close();

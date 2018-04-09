@@ -4,6 +4,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 
 #include <algorithm>
 
@@ -22,27 +23,9 @@ struct hh
 
 int main()
 {
-  vector<string> authors;
-
-  ifstream author_in("../0-data/2-merged/merged_authors.txt");
-
-  string author_line;
-  getline(author_in, author_line);
-  getline(author_in, author_line);
-
-  while (getline(author_in, author_line))
-  {
-    authors.push_back(author_line);
-  }
-
-  author_in.close();
-  cout << "merged_authors.txt has been read." << endl;
-
-  cout << endl;
-
   vector<int> awp_rowptr;
 
-  ifstream awp_rowptr_in("../0-data/3-crs/author_writes_paper_rowptr.txt");
+  ifstream awp_rowptr_in("../00-data/03-crs/author_writes_paper_rowptr.txt");
 
   string awp_rowptr_line;
   getline(awp_rowptr_in, awp_rowptr_line);
@@ -61,7 +44,7 @@ int main()
 
   vector<int> awp_colind;
 
-  ifstream awp_colind_in("../0-data/3-crs/author_writes_paper_colind.txt");
+  ifstream awp_colind_in("../00-data/03-crs/author_writes_paper_colind.txt");
 
   string awp_colind_line;
   getline(awp_colind_in, awp_colind_line);
@@ -82,7 +65,7 @@ int main()
 
   vector<int> pcp_rowptr;
 
-  ifstream pcp_rowptr_in("../0-data/3-crs/paper_citedby_paper_rowptr.txt");
+  ifstream pcp_rowptr_in("../00-data/03-crs/paper_citedby_paper_rowptr.txt");
 
   string pcp_rowptr_line;
   getline(pcp_rowptr_in, pcp_rowptr_line);
@@ -99,19 +82,46 @@ int main()
   pcp_rowptr_in.close();
   cout << "paper_citedby_paper_rowptr.txt has been read." << endl;
 
+  vector<int> pcp_colind;
+
+  ifstream pcp_colind_in("../00-data/03-crs/paper_citedby_paper_colind.txt");
+
+  string pcp_colind_line;
+  getline(pcp_colind_in, pcp_colind_line);
+  getline(pcp_colind_in, pcp_colind_line);
+
+  while (getline(pcp_colind_in, pcp_colind_line))
+  {
+    istringstream iss(pcp_colind_line);
+    int num;
+    iss >> num;
+    pcp_colind.push_back(num);
+  }
+
+  pcp_colind_in.close();
+  cout << "paper_citedby_paper_colind.txt has been read." << endl;
+
   cout << endl;
 
   vector<int> hindex;
 
-  for (int author = 0; author < authors.size(); author++)
+  for (int author = 0; author < awp_rowptr.size() - 1; author++)
   {
     vector<int> citationcounts;
 
-    for (int col = awp_rowptr[author]; col < awp_rowptr[author+1]; col++)
+    set<int> writtenbyauthor;
+    for (long long int col = awp_rowptr[author]; col < awp_rowptr[author+1]; col++)
+      writtenbyauthor.insert(awp_colind[col]);
+
+    for (set<int>::iterator it = writtenbyauthor.begin(); it != writtenbyauthor.end(); ++it)
     {
-      int paperid = awp_colind[col];
+      int paperid = *it;
       
-      int citationcount = pcp_rowptr[paperid+1] - pcp_rowptr[paperid];
+      int citationcount = 0;
+      for (long long int rcol = pcp_rowptr[paperid]; rcol < pcp_rowptr[paperid+1]; rcol++)
+        if (writtenbyauthor.find(pcp_colind[rcol]) == writtenbyauthor.end())
+          citationcount++;
+
       citationcounts.push_back(citationcount);
     }
 
@@ -133,7 +143,7 @@ int main()
 
   cout << endl; 
   
-  ofstream full_out("hindexes.txt");
+  ofstream full_out("hindexes-woself.txt");
 
   full_out << hindex.size() << endl << endl;
 
@@ -141,7 +151,7 @@ int main()
     full_out << hindex[i] << endl;
 
   full_out.close();
-  cout << "hindexes.txt has been written." << endl;
+  cout << "hindexes-woself.txt has been written." << endl;
 
 
   vector<hh> hwithid;
@@ -156,26 +166,22 @@ int main()
     hwithid.push_back(author);
   }
 
-  ofstream top_out("top100.txt");
+  ofstream top_out("top10000-h-woself.txt");
 
-  top_out << 100 << endl;
+  top_out << 10000 << endl << endl;
 
   make_heap(hwithid.begin(), hwithid.end());
 
-  for (int i = 1; i <= 100; i++)
+  for (int i = 1; i <= 10000; i++)
   {
-    top_out << endl;
-
-    top_out << i << endl;
-    top_out << hwithid.front().h << endl;
-    top_out << authors[hwithid.front().id] << endl;
+    top_out << hwithid.front().id << endl;
 
     pop_heap(hwithid.begin(), hwithid.end());
     hwithid.pop_back();
   }
 
   top_out.close();
-  cout << "top100.txt has been written." << endl;
+  cout << "top10000-h-woself.txt has been written." << endl;
 
   return 0;
 }
